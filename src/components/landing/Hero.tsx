@@ -4,12 +4,6 @@ import { useEffect, useState } from "react";
 import type { CSSProperties, ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
 
-function scrollTo(id: string) {
-    document.getElementById(id)?.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-    });
-}
 
 function useEntrance(delayMs: number, reduceMotion: boolean) {
     const [settled, setSettled] = useState(reduceMotion);
@@ -209,7 +203,6 @@ export default function Hero() {
     const {
         mood,
         followCursor,
-        triggerMood,
         resetMood,
         setSelectionLock,
     } = useAvatarMood();

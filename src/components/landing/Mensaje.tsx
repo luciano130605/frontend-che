@@ -5,9 +5,7 @@ import {
     ArrowMoveUpRightIcon,
     CheckCheck,
     CheckIcon,
-    ComingSoon02Icon,
     MoreVertical,
-    Notification01Icon,
     StarIcon,
 } from "@hugeicons/core-free-icons";
 import { cn } from "../../lib/utils";

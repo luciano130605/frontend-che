@@ -1,5 +1,3 @@
-import { Github, Instagram, NewTwitterIcon, } from "@hugeicons/core-free-icons";
-import { HugeiconsIcon } from "@hugeicons/react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { useSession } from "../../auth";
 
@@ -33,7 +31,6 @@ const LEGAL_LINKS: FooterLink[] = [
     { label: "Privacidad", href: "/Privacidad" },
 ];
 
-const SOCIAL_LINKS = [{ label: "Instagram", href: "https://www.instagram.com/", icon: Instagram, }, { label: "X (Twitter)", href: "https://x.com/", icon: NewTwitterIcon, },];
 
 const FOCUS_RING =
     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-che-coral focus-visible:ring-offset-2 focus-visible:ring-offset-che-bg";

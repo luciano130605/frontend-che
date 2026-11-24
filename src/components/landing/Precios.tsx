@@ -60,7 +60,7 @@ const PLANS: Plan[] = [
     },
 ];
 
-export default function Precios({ profile = null, profileFailed = false }: { profile?: UserProfile | null; profileFailed?: boolean }) {
+export default function Precios({ profile = null }: { profile?: UserProfile | null; profileFailed?: boolean }) {
     const session = useSession();
     const { mood, followCursor, triggerMood, resetMood } = useAvatarMood();
     const [period, setPeriod] = useState<BillingPeriod>("mensual");
@@ -96,7 +96,7 @@ export default function Precios({ profile = null, profileFailed = false }: { pro
                         <p className="text-xs font-semibold text-che-ink-soft">Sesión iniciada</p>
                         <p className="mt-1 break-all text-sm font-medium">{session.user.email}</p>
                     </div>
-                
+
                 </div>
             )}
             <div className="mb-10 flex justify-center gap-2 sm:justify-start">
