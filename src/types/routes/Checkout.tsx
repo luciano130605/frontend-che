@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { Cancel01, Loading03, CheckmarkCircle02 } from "@hugeicons/core-free-icons";
 import { cn } from "../../lib/utils";
 
 export type CheckoutPlan = {
@@ -63,7 +62,7 @@ export function CheckoutModal({ plan, onClose }: Props) {
                         className="absolute right-4 top-4 rounded-full p-1.5 text-che-ink-soft transition-colors hover:bg-che-line/40 hover:text-che-ink"
                         aria-label="Cerrar"
                     >
-                        <HugeiconsIcon icon={Cancel01} size={18} />
+                        Cerrar
                     </button>
                 ) : null}
 
@@ -118,11 +117,6 @@ export function CheckoutModal({ plan, onClose }: Props) {
 
                 {step === "yendo-a-registro" ? (
                     <div className="flex flex-col items-center gap-3 py-6 text-center">
-                        <HugeiconsIcon
-                            icon={Loading03}
-                            size={28}
-                            className={cn("text-che-coral-dark", "animate-spin")}
-                        />
                         <p className="text-sm font-medium text-che-ink">Volviendo de /register...</p>
                     </div>
                 ) : null}
@@ -154,18 +148,13 @@ export function CheckoutModal({ plan, onClose }: Props) {
 
                 {step === "procesando" ? (
                     <div className="flex flex-col items-center gap-3 py-6 text-center">
-                        <HugeiconsIcon
-                            icon={Loading03}
-                            size={32}
-                            className={cn("text-che-coral-dark", "animate-spin")}
-                        />
+                      
                         <p className="text-sm font-medium text-che-ink">Confirmando tu pago...</p>
                     </div>
                 ) : null}
 
                 {step === "confirmacion" ? (
                     <div className="flex flex-col items-center gap-3 py-4 text-center">
-                        <HugeiconsIcon icon={CheckmarkCircle02} size={40} className="text-che-coral-dark" />
                         <h3 className="font-display text-lg font-semibold text-che-ink">
                             ¡Listo!
                         </h3>
