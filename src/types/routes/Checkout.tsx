@@ -1,6 +1,4 @@
 import { useState } from "react";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { cn } from "../../lib/utils";
 
 export type CheckoutPlan = {
     id: string;
