@@ -16,7 +16,7 @@
     "@hugeicons/core-free-icons": "^4.3.3",
     "@hugeicons/react": "^1.1.10",
     "@tanstack/react-router": "^1.170.34",
-    "@tanstack/react-start": "^1.168.50",
+    "@tanstack/react-start": "^1.169.7",
     "clsx": "^2.1.1",
     "lucide-react": "^0.510.0",
     "react": "^19.2.8",
