@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Che — Tu semana, organizada al hablar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500;1,9..144,600&family=Space+Grotesk:wght@400;500;600;700&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#EDF3EA;
+    --bg-2:#E1EBDC;
+    --paper:#FBFCF9;
+    --ink:#22301F;
+    --ink-soft:#5C6B57;
+    --coral:#FF8B66;
+    --coral-dark:#E36A45;
+    --coral-soft:#FFE1D3;
+    --lav:#B8A4E3;
+    --lav-soft:#EBE4F7;
+    --mustard:#F2C14E;
+    --mustard-soft:#FBEDC9;
+    --line:#C9D9C2;
+    --line-2:#D8E2D3;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--bg); color:var(--ink); font-family:'Space Grotesk',sans-serif; line-height:1.5;}
+  .display{font-family:'Fraunces',serif;}
+  .hand{font-family:'Caveat',cursive;}
+  a{color:inherit; text-decoration:none;}
+
+  /* subtle grain/texture via noise-like radial dots */
+  body::before{
+    content:''; position:fixed; inset:0; pointer-events:none; z-index:0; opacity:.5;
+    background-image: radial-gradient(circle, rgba(34,48,31,0.035) 1px, transparent 1px);
+    background-size: 18px 18px;
+  }
+
+  .topnav{position:sticky; top:0; z-index:50; background:rgba(237,243,234,0.88); backdrop-filter:blur(10px); border-bottom:1.5px solid var(--line);}
+  .nav-inner{max-width:1180px; margin:0 auto; padding:16px 28px; display:flex; align-items:center; justify-content:space-between;}
+  .logo{font-family:'Fraunces',serif; font-size:1.6rem; font-weight:700; letter-spacing:-0.01em; display:flex; align-items:center; cursor:pointer; color:var(--ink);}
+  .logo .swash{color:var(--coral); font-style:italic; font-weight:500;}
+  .nav-tabs{display:flex; gap:2px; background:var(--paper); padding:4px; border-radius:100px; border:1.5px solid var(--line);}
+  .nav-tab{padding:8px 18px; border-radius:100px; font-size:0.85rem; font-weight:600; color:var(--ink-soft); cursor:pointer; border:none; background:none; font-family:'Space Grotesk',sans-serif; transition:all .2s ease;}
+  .nav-tab.active{background:var(--ink); color:var(--bg);}
+  .nav-tab:not(.active):hover{color:var(--ink);}
+  .nav-right{display:flex; align-items:center; gap:10px;}
+  .btn{padding:12px 22px; border-radius:11px; font-weight:700; font-size:0.88rem; cursor:pointer; border:2px solid var(--ink); font-family:'Space Grotesk',sans-serif; transition:all .15s ease; display:inline-flex; align-items:center; gap:8px;}
+  .btn-primary{background:var(--ink); color:var(--bg);}
+  .btn-primary:hover{background:var(--coral-dark); border-color:var(--coral-dark); transform:translate(-1px,-1px); box-shadow:3px 3px 0 var(--ink);}
+  .btn-ghost{background:none; color:var(--ink); border:2px solid var(--line);}
+  .btn-ghost:hover{border-color:var(--ink);}
+  .btn-sm{padding:8px 16px; font-size:0.8rem;}
+
+  .view{display:none; animation:fadeIn .3s ease; position:relative; z-index:1;}
+  .view.active{display:block;}
+  @keyframes fadeIn{from{opacity:0;} to{opacity:1;}}
+
+  /* ===== HOME ===== */
+  .hero{max-width:1180px; margin:0 auto; padding:76px 28px 30px; position:relative;}
+  .hero-grid{display:grid; grid-template-columns:1.15fr 0.85fr; gap:56px; align-items:center;}
+  .eyebrow-tag{display:inline-flex; align-items:center; gap:8px; font-size:0.78rem; font-weight:700; color:var(--ink); background:var(--mustard-soft); padding:7px 16px 7px 14px; border-radius:100px; margin-bottom:26px; border:1.5px solid var(--mustard);}
+  .eyebrow-tag::before{content:'✎'; font-size:0.9rem;}
+  .hero h1{font-family:'Fraunces',serif; font-size:3.6rem; font-weight:600; line-height:1.02; letter-spacing:-0.02em; margin-bottom:24px;}
+  .hero h1 .hand-word{font-family:'Caveat',cursive; font-weight:700; color:var(--coral); font-size:1.25em; display:inline-block; transform:rotate(-3deg); padding:0 4px;}
+  .hero p.lead{font-size:1.15rem; color:var(--ink-soft); max-width:460px; margin-bottom:34px; line-height:1.6;}
+  .hero-ctas{display:flex; gap:14px; align-items:center;}
+
+  /* the "scattered notes" hero visual */
+  .notes-stack{position:relative; height:420px;}
+  .sticky-note{
+    position:absolute; background:var(--paper); border:1.5px solid var(--ink);
+    border-radius:3px; padding:16px 18px; box-shadow:4px 4px 0 rgba(34,48,31,0.15);
+    font-size:0.92rem; width:230px;
+  }
+  .note-1{top:0; left:10px; transform:rotate(-6deg); background:var(--coral-soft); z-index:3;}
+  .note-2{top:70px; right:0; transform:rotate(4deg); background:var(--lav-soft); z-index:2; width:210px;}
+  .note-3{top:230px; left:40px; transform:rotate(3deg); background:var(--mustard-soft); z-index:4; width:245px;}
+  .note-4{top:280px; right:20px; transform:rotate(-4deg); background:var(--paper); z-index:1; width:180px; font-family:'Caveat',cursive; font-size:1.3rem; color:var(--ink-soft);}
+  .sticky-note .strike{text-decoration:line-through; text-decoration-color:var(--coral); text-decoration-thickness:2px; opacity:.6;}
+  .sticky-note b{display:block; font-weight:700; margin-bottom:4px;}
+  .sticky-note .meta{font-size:0.76rem; color:var(--ink-soft); font-weight:500;}
+  .connector-arrow{position:absolute; top:190px; left:190px; width:60px; z-index:5; opacity:0.5;}
+
+  .live-demo{max-width:1180px; margin:70px auto 0; padding:0 28px;}
+  .demo-card{background:var(--paper); border:2px solid var(--ink); border-radius:20px; padding:8px; box-shadow:6px 6px 0 var(--coral-soft);}
+  .demo-card-inner{border:1.5px dashed var(--line); border-radius:14px; padding:28px;}
+  .demo-label{font-size:0.78rem; font-weight:700; color:var(--coral-dark); text-transform:uppercase; letter-spacing:0.04em; margin-bottom:16px; display:flex; align-items:center; gap:8px;}
+  .demo-label .dot{width:7px; height:7px; border-radius:50%; background:var(--coral); animation:blink 1.6s infinite;}
+  @keyframes blink{0%,100%{opacity:1;} 50%{opacity:.3;}}
+  .demo-input-row{display:flex; gap:10px; margin-bottom:20px;}
+  .demo-input{flex:1; border:2px solid var(--ink); border-radius:12px; padding:13px 16px; font-family:'Space Grotesk',sans-serif; font-size:0.95rem; background:var(--bg);}
+  .demo-input:focus{outline:none; border-color:var(--coral);}
+  .demo-send{background:var(--ink); color:var(--bg); border:2px solid var(--ink); padding:0 22px; border-radius:12px; font-weight:700; font-size:0.88rem; cursor:pointer; font-family:'Space Grotesk',sans-serif;}
+  .demo-send:hover{background:var(--coral-dark); border-color:var(--coral-dark);}
+  .parsed-cards{display:flex; gap:12px; flex-wrap:wrap; min-height:24px;}
+  .parsed-card{display:flex; align-items:center; gap:10px; background:var(--bg); border:1.5px solid var(--ink); border-radius:11px; padding:10px 14px; opacity:0; animation:cardIn .35s ease forwards; font-size:0.85rem;}
+  @keyframes cardIn{from{opacity:0; transform:translateY(6px) scale(.96);} to{opacity:1; transform:translateY(0) scale(1);}}
+  .pc-dot{width:9px; height:9px; border-radius:50%; flex-shrink:0;}
+  .pc-dot.coral{background:var(--coral);} .pc-dot.lav{background:var(--lav);} .pc-dot.mustard{background:var(--mustard);}
+  .pc-text b{font-weight:700;}
+  .pc-when{font-size:0.76rem; color:var(--ink-soft); background:var(--paper); padding:3px 9px; border-radius:100px; border:1px solid var(--line);}
+  .demo-empty{font-size:0.85rem; color:var(--ink-soft); font-family:'Caveat',cursive; font-size:1.15rem;}
+
+  .pain-strip{background:var(--ink); color:var(--bg); padding:70px 28px; margin-top:76px; position:relative; overflow:hidden;}
+  .pain-strip::before{content:'"'; position:absolute; font-family:'Fraunces',serif; font-size:22rem; color:rgba(255,255,255,0.03); top:-80px; left:20px; line-height:1;}
+  .pain-inner{max-width:1180px; margin:0 auto; position:relative;}
+  .pain-inner .kicker{font-size:0.8rem; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:var(--mustard); margin-bottom:16px;}
+  .pain-inner h2{font-family:'Fraunces',serif; font-size:2rem; font-weight:500; max-width:680px; line-height:1.25; margin-bottom:50px;}
+  .pain-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:rgba(251,252,249,0.12); border-radius:16px; overflow:hidden;}
+  .pain-item{background:var(--ink); padding:28px 26px;}
+  .pain-item p.old{font-size:0.85rem; color:#8FA087; margin-bottom:12px; text-decoration:line-through; text-decoration-color:var(--coral);}
+  .pain-item p.new{font-family:'Fraunces',serif; font-size:1.2rem; font-weight:500; color:var(--bg); line-height:1.4;}
+
+  .section{max-width:1180px; margin:0 auto; padding:100px 28px;}
+  .section-head{max-width:600px; margin-bottom:56px;}
+  .section-head .eyebrow-tag{margin-bottom:20px;}
+  .section-head h2{font-family:'Fraunces',serif; font-size:2.3rem; font-weight:600; letter-spacing:-0.01em; margin-bottom:14px;}
+  .section-head p{color:var(--ink-soft); font-size:1.05rem;}
+  .feature-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:0; border:2px solid var(--ink); border-radius:20px; overflow:hidden;}
+  .feature-card{background:var(--paper); padding:36px 30px; border-right:2px solid var(--ink);}
+  .feature-card:last-child{border-right:none;}
+  .feature-num{font-family:'Caveat',cursive; font-size:2.2rem; font-weight:700; color:var(--coral); line-height:1; margin-bottom:14px;}
+  .feature-card h3{font-family:'Fraunces',serif; font-size:1.2rem; font-weight:600; margin-bottom:12px;}
+  .feature-card p{font-size:0.92rem; color:var(--ink-soft); line-height:1.6;}
+
+  .cta-band{background:var(--coral); border-radius:26px; padding:64px 56px; margin:0 28px 100px; max-width:1124px; margin-left:auto; margin-right:auto; display:flex; justify-content:space-between; align-items:center; gap:40px; color:var(--ink); border:2px solid var(--ink); box-shadow:8px 8px 0 var(--ink);}
+  .cta-band h2{font-family:'Fraunces',serif; font-size:2rem; font-weight:600; max-width:420px;}
+  .cta-band p{color:#4A2E1F; margin-top:10px; opacity:.75;}
+  .cta-band .btn-primary{background:var(--ink); color:var(--bg); border-color:var(--ink);}
+  .cta-band .btn-primary:hover{background:var(--paper); color:var(--ink);}
+  footer{border-top:1.5px solid var(--line); padding:32px 28px; text-align:center; color:var(--ink-soft); font-size:0.85rem; position:relative; z-index:1;}
+
+  /* ===== MIS TAREAS ===== */
+  .app-shell{max-width:1180px; margin:0 auto; padding:36px 28px 100px; display:grid; grid-template-columns:340px 1fr; gap:28px; align-items:start; position:relative; z-index:1;}
+  @media(max-width:960px){.app-shell{grid-template-columns:1fr;}}
+
+  .composer-card{background:var(--paper); border:2px solid var(--ink); border-radius:18px; padding:22px; position:sticky; top:90px; box-shadow:5px 5px 0 var(--lav-soft);}
+  .composer-card h3{font-family:'Fraunces',serif; font-size:1.15rem; font-weight:600; margin-bottom:4px;}
+  .composer-card .sub{font-size:0.82rem; color:var(--ink-soft); margin-bottom:16px;}
+  .composer-input{width:100%; min-height:92px; border:1.5px solid var(--line); border-radius:11px; padding:13px; font-family:'Space Grotesk',sans-serif; font-size:0.9rem; resize:none; background:var(--bg); color:var(--ink);}
+  .composer-input:focus{outline:none; border-color:var(--coral);}
+  .composer-foot{display:flex; justify-content:space-between; align-items:center; margin-top:12px;}
+  .composer-hint{font-size:0.74rem; color:var(--ink-soft); font-family:'Caveat',cursive; font-size:1.05rem;}
+  .composer-send{background:var(--ink); color:var(--bg); border:none; padding:9px 16px; border-radius:9px; font-weight:700; font-size:0.82rem; cursor:pointer;}
+  .composer-send:hover{background:var(--coral-dark);}
+  .composer-examples{margin-top:16px; padding-top:16px; border-top:1.5px dashed var(--line);}
+  .composer-examples .lbl{font-size:0.74rem; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; color:var(--ink-soft); margin-bottom:9px;}
+  .example-chip{display:block; width:100%; text-align:left; background:var(--bg); border:1.5px solid var(--line); border-radius:9px; padding:9px 11px; font-size:0.8rem; color:var(--ink-soft); margin-bottom:6px; cursor:pointer; font-family:'Space Grotesk',sans-serif;}
+  .example-chip:hover{border-color:var(--coral); color:var(--ink); background:var(--coral-soft);}
+
+  .brief-banner{background:var(--ink); color:var(--bg); border-radius:18px; padding:26px 28px; margin-bottom:24px; position:relative; overflow:hidden;}
+  .brief-banner::after{content:'✎'; position:absolute; right:20px; top:20px; font-size:2.5rem; opacity:0.1;}
+  .brief-banner .brief-label{font-size:0.75rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:var(--mustard); margin-bottom:10px;}
+  .brief-banner h2{font-family:'Fraunces',serif; font-size:1.4rem; font-weight:500; line-height:1.45;}
+  .brief-banner h2 .hand-word{font-family:'Caveat',cursive; color:var(--coral); font-weight:700; font-size:1.3em;}
+
+  .filters-row{display:flex; gap:8px; margin-bottom:26px; flex-wrap:wrap;}
+  .filter-chip{padding:8px 16px; border-radius:100px; font-size:0.82rem; font-weight:600; border:1.5px solid var(--ink); background:var(--paper); color:var(--ink); cursor:pointer; font-family:'Space Grotesk',sans-serif;}
+  .filter-chip.active{background:var(--ink); color:var(--bg);}
+
+  .day-header{display:flex; align-items:baseline; gap:14px; margin:30px 0 16px;}
+  .day-header:first-of-type{margin-top:0;}
+  .day-header h3{font-family:'Fraunces',serif; font-size:1.15rem; font-weight:600;}
+  .day-header .day-line{flex:1; height:1.5px; background:repeating-linear-gradient(90deg, var(--ink) 0, var(--ink) 4px, transparent 4px, transparent 9px); opacity:.35;}
+  .day-header .day-tag{font-size:0.72rem; font-weight:700; padding:4px 11px; border-radius:100px; background:var(--coral); color:var(--ink); border:1.5px solid var(--ink);}
+
+  /* task cards as tilted paper scraps */
+  .task-row{
+    display:flex; align-items:flex-start; gap:14px; background:var(--paper); border:1.5px solid var(--ink);
+    border-radius:13px; padding:16px 18px; margin-bottom:12px; position:relative;
+  }
+  .task-row.alta{border-left:4px solid var(--coral);}
+  .task-row.media{border-left:4px solid var(--mustard);}
+  .task-row.baja{border-left:4px solid var(--lav);}
+  .task-row.done{background:var(--bg-2); opacity:.7;}
+  .task-check{width:24px; height:24px; border-radius:7px; border:2px solid var(--ink); flex-shrink:0; margin-top:2px; cursor:pointer; transition:all .15s ease; position:relative; background:var(--paper);}
+  .task-check.done{background:var(--coral); border-color:var(--ink);}
+  .task-check.done::after{content:'✓'; color:var(--ink); position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:0.85rem; font-weight:700;}
+  .task-body{flex:1;}
+  .task-body .t-title{font-size:0.98rem; font-weight:600; margin-bottom:6px;}
+  .task-body.done .t-title{text-decoration:line-through; text-decoration-color:var(--coral); text-decoration-thickness:2px; color:var(--ink-soft);}
+  .task-body .t-meta{font-size:0.78rem; color:var(--ink-soft); display:flex; align-items:center; gap:9px; flex-wrap:wrap;}
+  .t-cat{padding:3px 10px; border-radius:100px; font-weight:700; font-size:0.72rem; border:1.5px solid var(--ink);}
+  .t-cat.facultad{background:var(--lav-soft);}
+  .t-cat.plata{background:var(--coral-soft);}
+  .t-cat.ponos{background:#DDEFD6;}
+  .t-cat.personal{background:var(--mustard-soft);}
+  .t-urg{display:flex; align-items:center; gap:5px; font-weight:600;}
+  .t-urg .bar{width:6px; height:6px; border-radius:50%;}
+  .t-urg.alta .bar{background:var(--coral);} .t-urg.alta{color:var(--coral-dark);}
+  .t-urg.media .bar{background:#C99A1E;} .t-urg.media{color:#9C7B18;}
+  .t-urg.baja .bar{background:var(--lav);} .t-urg.baja{color:#7A62B8;}
+  .task-time{font-family:'Fraunces',serif; font-size:0.95rem; font-weight:600; color:var(--ink); white-space:nowrap;}
+
+  .whatsapp-preview{margin-top:36px; background:var(--mustard-soft); border:1.5px dashed var(--ink); border-radius:16px; padding:20px 22px; display:flex; gap:14px; align-items:flex-start;}
+  .whatsapp-preview .wa-icon{width:38px; height:38px; border-radius:50%; background:var(--ink); color:var(--bg); display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:1rem;}
+  .whatsapp-preview .wa-text b{display:block; font-size:0.88rem; margin-bottom:4px;}
+  .whatsapp-preview .wa-text span{font-size:0.85rem; color:var(--ink-soft); font-family:'Caveat',cursive; font-size:1.1rem;}
+
+  /* ===== AUTH ===== */
+  .auth-wrap{max-width:1180px; margin:0 auto; padding:70px 28px 110px; display:flex; justify-content:center; position:relative; z-index:1;}
+  .auth-card{width:100%; max-width:430px; background:var(--paper); border:2px solid var(--ink); border-radius:24px; padding:42px 38px; box-shadow:7px 7px 0 var(--coral-soft); position:relative;}
+  .auth-card::before{content:'✎'; position:absolute; top:-18px; left:36px; background:var(--mustard); border:2px solid var(--ink); border-radius:50%; width:38px; height:38px; display:flex; align-items:center; justify-content:center; font-size:1.1rem;}
+  .auth-tabs{display:flex; background:var(--bg); border:1.5px solid var(--ink); border-radius:100px; padding:4px; margin-bottom:30px;}
+  .auth-tab{flex:1; text-align:center; padding:10px; border-radius:100px; font-size:0.85rem; font-weight:700; cursor:pointer; border:none; background:none; color:var(--ink-soft); font-family:'Space Grotesk',sans-serif;}
+  .auth-tab.active{background:var(--ink); color:var(--bg);}
+  .auth-head{margin-bottom:26px;}
+  .auth-head h2{font-family:'Fraunces',serif; font-size:1.6rem; font-weight:600; margin-bottom:6px;}
+  .auth-head p{font-size:0.87rem; color:var(--ink-soft);}
+  .field{margin-bottom:16px;}
+  .field label{display:block; font-size:0.8rem; font-weight:700; margin-bottom:7px;}
+  .field input{width:100%; border:1.5px solid var(--line); border-radius:10px; padding:12px 14px; font-family:'Space Grotesk',sans-serif; font-size:0.9rem; background:var(--bg); color:var(--ink);}
+  .field input:focus{outline:none; border-color:var(--coral);}
+  .auth-submit{width:100%; padding:14px; border-radius:11px; background:var(--ink); color:var(--bg); border:2px solid var(--ink); font-weight:700; font-size:0.9rem; cursor:pointer; margin-top:6px; font-family:'Space Grotesk',sans-serif;}
+  .auth-submit:hover{background:var(--coral-dark); border-color:var(--coral-dark);}
+  .auth-alt{text-align:center; font-size:0.82rem; color:var(--ink-soft); margin-top:20px;}
+  .auth-alt a{color:var(--coral-dark); font-weight:700; cursor:pointer;}
+  .auth-form{display:none;}
+  .auth-form.active{display:block;}
+
+  @media(max-width:760px){
+    .hero-grid{grid-template-columns:1fr;} .hero h1{font-size:2.4rem;} .notes-stack{height:280px; margin-top:20px;}
+    .pain-grid{grid-template-columns:1fr;} .feature-grid{grid-template-columns:1fr;}
+    .feature-card{border-right:none; border-bottom:2px solid var(--ink);} .feature-card:last-child{border-bottom:none;}
+    .nav-tabs{display:none;} .cta-band{flex-direction:column; text-align:center;}
+  }
+  @media (prefers-reduced-motion: reduce){*{animation:none !important; transition:none !important;}}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="nav-inner">
+    <div class="logo" onclick="showView('landing', document.querySelectorAll('.nav-tab')[0])">Che<span class="swash">.</span></div>
+    <div class="nav-tabs">
+      <button class="nav-tab active" onclick="showView('landing', this)">Inicio</button>
+      <button class="nav-tab" onclick="showView('app', this)">Mis tareas</button>
+    </div>
+    <div class="nav-right">
+      <button class="btn btn-ghost btn-sm" onclick="showView('auth', null); setAuthTab('login')">Ingresar</button>
+      <button class="btn btn-primary btn-sm" onclick="showView('auth', null); setAuthTab('register')">Crear cuenta</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ===================== 1. HOME ===================== -->
+<div class="view active" id="landing">
+  <section class="hero">
+    <div class="hero-grid">
+      <div>
+        <div class="eyebrow-tag">Para quien no le sirve anotar ni poner alarmas</div>
+        <h1>Contale tu semana.<br>Che la <span class="hand-word">ordena</span> sola.</h1>
+        <p class="lead">Escribís como le hablarías a un amigo. La IA entiende, clasifica y arma tu cronograma — y te avisa cuando toca, sin que abras nada.</p>
+        <div class="hero-ctas">
+          <button class="btn btn-primary" onclick="showView('auth', null); setAuthTab('register')">Organizar mi semana</button>
+          <button class="btn btn-ghost" onclick="document.getElementById('comofunciona').scrollIntoView()">Ver cómo funciona ↓</button>
+        </div>
+      </div>
+      <div class="notes-stack">
+        <div class="sticky-note note-1"><b>Entregar el TP</b><span class="meta">Martes · Facultad</span></div>
+        <div class="sticky-note note-2"><b>Pagar alquiler</b><span class="meta">Viernes · Plata</span></div>
+        <div class="sticky-note note-3"><b class="strike">Devolver el libro</b><span class="meta">Resuelto ✓</span></div>
+        <div class="sticky-note note-4">"che, acordate del cumple de mamá"</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="live-demo">
+    <div class="demo-card">
+      <div class="demo-card-inner">
+        <div class="demo-label"><span class="dot"></span>Probalo ahora, sin cuenta</div>
+        <div class="demo-input-row">
+          <input class="demo-input" id="homeDemoInput" placeholder="Ej: tengo que pagar el alquiler el viernes..." value="entregar el TP el martes y reunión con Ponos el jueves 10am">
+          <button class="demo-send" onclick="runHomeDemo()">Probar →</button>
+        </div>
+        <div class="parsed-cards" id="homeDemoResult">
+          <div class="demo-empty">Escribí algo y tocá "Probar" para ver cómo lo organiza →</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pain-strip">
+    <div class="pain-inner">
+      <div class="kicker">Lo que ya probaste</div>
+      <h2>No es que te falte disciplina. Es que todo lo que existe te pide un esfuerzo que no tenés para dar.</h2>
+      <div class="pain-grid">
+        <div class="pain-item"><p class="old">Anotarlo en un cuaderno</p><p class="new">Nunca lo volvés a abrir</p></div>
+        <div class="pain-item"><p class="old">Configurar una alarma</p><p class="new">Da fiaca elegir día, hora, repetición</p></div>
+        <div class="pain-item"><p class="old">Un Notion prolijo</p><p class="new">Mantenerlo es un trabajo en sí mismo</p></div>
+      </div>
+    </div>
+  </div>
+
+  <section class="section" id="comofunciona">
+    <div class="section-head">
+      <div class="eyebrow-tag">Cómo funciona</div>
+      <h2>Tres cosas. Ninguna te pide esfuerzo extra.</h2>
+      <p>No es otra app de tareas con más botones. Es sacarte el trabajo de organizar, no dártelo.</p>
+    </div>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-num">1</div>
+        <h3>Se lo contás, no lo cargás</h3>
+        <p>Escribís en lenguaje natural, como un mensaje. Nada de elegir categoría, prioridad o fecha en un calendario — la IA lo interpreta sola.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-num">2</div>
+        <h3>Se adapta, no depende de vos</h3>
+        <p>El sistema decide cuándo recordarte según la urgencia real, no según una alarma que configuraste una vez y te olvidaste.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-num">3</div>
+        <h3>Te viene a buscar</h3>
+        <p>Un resumen corto por WhatsApp a la mañana. No hace falta que abras nada — la organización llega a vos.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="cta-band">
+    <div>
+      <h2>Probá con lo que tenés pendiente hoy.</h2>
+      <p>Sin formularios. Escribilo como se lo dirías a un amigo.</p>
+    </div>
+    <button class="btn btn-primary" onclick="showView('auth', null); setAuthTab('register')">Empezar</button>
+  </div>
+
+  <footer>Che — organización sin fricción. Prototipo de tesis.</footer>
+</div>
+
+<!-- ===================== 2. MIS TAREAS ===================== -->
+<div class="view" id="app">
+  <div class="app-shell">
+    <div class="composer-card">
+      <h3>Contame qué tenés</h3>
+      <div class="sub">Escribí como si le hablaras a alguien</div>
+      <textarea class="composer-input" placeholder="Ej: tengo que llamar al dentista, entregar el informe el lunes...">tengo que estudiar para el parcial de bases de datos, el jueves antes de las 20h</textarea>
+      <div class="composer-foot">
+        <span class="composer-hint">la IA lo ordena sola ✎</span>
+        <button class="composer-send" onclick="pulseComposer()">Agregar →</button>
+      </div>
+      <div class="composer-examples">
+        <div class="lbl">Ejemplos rápidos</div>
+        <button class="example-chip">pagar el abl antes del 30</button>
+        <button class="example-chip">devolverle el libro a Flor</button>
+        <button class="example-chip">reunión Ponos todos los jueves 10am</button>
+      </div>
+    </div>
+
+    <div>
+      <div class="brief-banner">
+        <div class="brief-label">Tu brief de hoy</div>
+        <h2>Tenés <span class="hand-word">3 cosas</span> antes del viernes. La más urgente: entregar el TP mañana.</h2>
+      </div>
+
+      <div class="filters-row">
+        <button class="filter-chip active">Todas</button>
+        <button class="filter-chip">Facultad</button>
+        <button class="filter-chip">Plata</button>
+        <button class="filter-chip">Ponos</button>
+        <button class="filter-chip">Personal</button>
+      </div>
+
+      <div class="day-header"><h3>Mañana — Martes</h3><div class="day-line"></div><div class="day-tag">Urgente</div></div>
+      <div class="task-row alta">
+        <div class="task-check"></div>
+        <div class="task-body">
+          <div class="t-title">Entregar TP de Desarrollo de Software</div>
+          <div class="t-meta"><span class="t-cat facultad">Facultad</span><span class="t-urg alta"><span class="bar"></span>Urgencia alta</span><span>Todo el día</span></div>
+        </div>
+      </div>
+
+      <div class="day-header"><h3>Jueves</h3><div class="day-line"></div></div>
+      <div class="task-row media">
+        <div class="task-check"></div>
+        <div class="task-body">
+          <div class="t-title">Reunión con el equipo de Ponos</div>
+          <div class="t-meta"><span class="t-cat ponos">Ponos</span><span class="t-urg media"><span class="bar"></span>Urgencia media</span></div>
+        </div>
+        <div class="task-time">10:00</div>
+      </div>
+      <div class="task-row media">
+        <div class="task-check"></div>
+        <div class="task-body">
+          <div class="t-title">Estudiar para el parcial de Bases de Datos</div>
+          <div class="t-meta"><span class="t-cat facultad">Facultad</span><span class="t-urg media"><span class="bar"></span>Urgencia media</span></div>
+        </div>
+        <div class="task-time">20:00</div>
+      </div>
+
+      <div class="day-header"><h3>Viernes</h3><div class="day-line"></div></div>
+      <div class="task-row baja">
+        <div class="task-check"></div>
+        <div class="task-body">
+          <div class="t-title">Pagar el alquiler</div>
+          <div class="t-meta"><span class="t-cat plata">Plata</span><span class="t-urg baja"><span class="bar"></span>Urgencia baja</span><span>Vence hoy</span></div>
+        </div>
+      </div>
+
+      <div class="day-header"><h3>Ya resuelto</h3><div class="day-line"></div></div>
+      <div class="task-row done">
+        <div class="task-check done"></div>
+        <div class="task-body done"><div class="t-title">Devolverle el libro a Flor</div><div class="t-meta"><span class="t-cat personal">Personal</span><span>Ayer</span></div></div>
+      </div>
+
+      <div class="whatsapp-preview">
+        <div class="wa-icon">✓</div>
+        <div class="wa-text"><b>Así te llega mañana a las 8am por WhatsApp</b><span>"Hoy: entregar el TP. Es lo único urgente, el resto puede esperar."</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== 3. LOGIN / REGISTRO ===================== -->
+<div class="view" id="auth">
+  <div class="auth-wrap">
+    <div class="auth-card">
+      <div class="auth-tabs">
+        <button class="auth-tab" id="tabLogin" onclick="setAuthTab('login')">Ingresar</button>
+        <button class="auth-tab" id="tabRegister" onclick="setAuthTab('register')">Crear cuenta</button>
+      </div>
+
+      <div class="auth-form" id="formLogin">
+        <div class="auth-head">
+          <h2>Hola de nuevo</h2>
+          <p>Entrá para ver tu semana organizada.</p>
+        </div>
+        <div class="field"><label>Email</label><input type="email" placeholder="vos@email.com"></div>
+        <div class="field"><label>Contraseña</label><input type="password" placeholder="••••••••"></div>
+        <button class="auth-submit" onclick="showView('app', document.querySelectorAll('.nav-tab')[1])">Ingresar</button>
+        <div class="auth-alt">¿No tenés cuenta? <a onclick="setAuthTab('register')">Creá una gratis</a></div>
+      </div>
+
+      <div class="auth-form" id="formRegister">
+        <div class="auth-head">
+          <h2>Creá tu cuenta</h2>
+          <p>Un minuto y empezás a organizar tu semana.</p>
+        </div>
+        <div class="field"><label>Nombre</label><input type="text" placeholder="Tu nombre"></div>
+        <div class="field"><label>Email</label><input type="email" placeholder="vos@email.com"></div>
+        <div class="field"><label>Contraseña</label><input type="password" placeholder="Mínimo 8 caracteres"></div>
+        <button class="auth-submit" onclick="showView('app', document.querySelectorAll('.nav-tab')[1])">Crear cuenta</button>
+        <div class="auth-alt">¿Ya tenés cuenta? <a onclick="setAuthTab('login')">Ingresá</a></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function showView(id, btn){
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+function setAuthTab(which){
+  showView('auth', null);
+  document.getElementById('tabLogin').classList.toggle('active', which==='login');
+  document.getElementById('tabRegister').classList.toggle('active', which==='register');
+  document.getElementById('formLogin').classList.toggle('active', which==='login');
+  document.getElementById('formRegister').classList.toggle('active', which==='register');
+}
+setAuthTab('login');
+
+document.querySelectorAll('.task-check').forEach(c => c.addEventListener('click', () => {
+  c.classList.toggle('done');
+  c.closest('.task-row').classList.toggle('done');
+  c.nextElementSibling.classList.toggle('done');
+}));
+document.querySelectorAll('.filter-chip').forEach(c => c.addEventListener('click', () => {
+  document.querySelectorAll('.filter-chip').forEach(x=>x.classList.remove('active'));
+  c.classList.add('active');
+}));
+function pulseComposer(){
+  const ta = document.querySelector('.composer-input');
+  ta.style.borderColor = 'var(--coral)';
+  setTimeout(()=> ta.style.borderColor = '', 500);
+}
+document.querySelectorAll('.example-chip').forEach(chip=>{
+  chip.addEventListener('click', ()=>{ document.querySelector('.composer-input').value = chip.textContent; });
+});
+
+function runHomeDemo(){
+  const val = document.getElementById('homeDemoInput').value.trim();
+  const result = document.getElementById('homeDemoResult');
+  result.innerHTML = '';
+  if(!val){ result.innerHTML = '<div class="demo-empty">Escribí algo primero.</div>'; return; }
+  const parts = [
+    {dot:'coral', text:'Entregar TP', cat:'Facultad', when:'Martes'},
+    {dot:'lav', text:'Reunión Ponos', cat:'Equipo', when:'Jueves 10:00'}
+  ];
+  parts.forEach((item, i) => {
+    const div = document.createElement('div');
+    div.className = 'parsed-card';
+    div.style.animationDelay = (i*0.18)+'s';
+    div.innerHTML = `<span class="pc-dot ${item.dot}"></span><div class="pc-text"><b>${item.text}</b> — ${item.cat}</div><span class="pc-when">${item.when}</span>`;
+    result.appendChild(div);
+  });
+}
+</script>
+</body>
+</html>
