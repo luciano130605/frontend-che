@@ -1,6 +1,5 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import AppHeader from "../../components/layout/AppHeader";
-import ProfileView from "../../components/ProfileView";
 import { getSession } from "../../auth";
 import AccountLayout from "../../components/AccountLayout"; // Layout
 
